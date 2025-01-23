@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Chart</title>
+</head>
+<body>
+  <div id="chart-container"></div>
+  <input type="text" id="message-input" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      // Update the chart with new data
+      updateChart(data.userId, data.message);
+    };
+
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      ws.send(input.value);
+      input.value = '';
+    }
+
+    function updateChart(userId, message) {
+      const container = document.getElementById('chart-container');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = `${userId}: ${message}`;
+      container.appendChild(messageElement);
+    }
+  </script>
+</body>
+</html>
